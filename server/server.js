@@ -1,5 +1,8 @@
 const studentRoutes = require('./routes/studentRoutes')
 const authRoutes = require('./routes/authRoutes')
+const subjectRoutes = require('./routes/subjectRoutes')
+const marksRoutes = require('./routes/marksRoutes')
+
 
 const express = require ('express')
 const mongoose = require('mongoose')
@@ -11,6 +14,8 @@ app.use(express.json())
 
 app.use('/api/students', studentRoutes)
 app.use('/api/auth', authRoutes)
+app.use('/api/subjects', subjectRoutes)
+app.use('/api/marks', marksRoutes )
 
 const PORT = 5000
 
