@@ -97,7 +97,7 @@ const updateMarks = async (req, res) => {
         }
         res.status(200).json({
             message: 'marks updated successfully ',
-            mark,
+            marks,
         })
 
     }  catch(error){

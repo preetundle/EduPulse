@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
 
-const attendenceSchema = new mongoose.Schema(
+const attendanceSchema = new mongoose.Schema(
     {
     student: {
       type: mongoose.Schema.Types.ObjectId,
@@ -44,6 +44,6 @@ attendanceSchema.index(
 )
 
 
-const Attendence = mongoose.model('Attendence', attendenceSchema)
+const Attendance = mongoose.model('Attendance', attendanceSchema)
 
-module.exports = Attendence
+module.exports = Attendance
