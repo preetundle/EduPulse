@@ -3,7 +3,7 @@ const authRoutes = require('./routes/authRoutes')
 const subjectRoutes = require('./routes/subjectRoutes')
 const marksRoutes = require('./routes/marksRoutes')
 const attendanceRoutes = require('./routes/attendanceRoutes')
-
+const analyticsRoutes = require('./routes/analyticsRoutes')
 
 const express = require ('express')
 const mongoose = require('mongoose')
@@ -18,6 +18,7 @@ app.use('/api/auth', authRoutes)
 app.use('/api/subjects', subjectRoutes)
 app.use('/api/marks', marksRoutes )
 app.use('/api/attendance', attendanceRoutes)
+app.use('/api/analytics', analyticsRoutes)
 
 
 

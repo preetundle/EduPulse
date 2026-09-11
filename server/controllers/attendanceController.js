@@ -56,7 +56,20 @@ const getAttendance = async (req, res) => {
         .populate('student')
         .populate('subject')
 
-        res.status(200).json(attendance)
+
+        const attendanceWithPercentage = attendance.map((record) => {
+            const percentage = 
+            record.classesConducted === 0
+            ? 0
+            : (record.classesAttended / record.classesConducted) * 100
+
+            return{
+                ...record.toObject(),
+                attendancePercentage: Number(percentage.toFixed(2)),
+            }
+        })
+
+        res.status(200).json(attendanceWithPercentage)
     } catch (error) {
         return res.status(500).json({
             message: 'failed to fetch attendance',
@@ -66,7 +79,7 @@ const getAttendance = async (req, res) => {
 }
 
 
-const getAttendanceById = async (req, res) => {
+const getAttendanceByStudent = async (req, res) => {
     try {
         const { studentId } = req.params
 
@@ -76,11 +89,60 @@ const getAttendanceById = async (req, res) => {
         .populate('student')
         .populate('subject')
 
-        return res.status(200).json(attendance)
+
+        const attendanceWithPercentage = attendance.map((record) => {
+            const percentage = 
+            record.classesConducted === 0
+            ? 0
+            : (record.classesAttended / record.classesConducted) * 100
+
+            return{
+                ...record.toObject(),
+                attendancePercentage: Number(percentage.toFixed(2))
+            }
+        })
+
+        return res.status(200).json(attendanceWithPercentage)
     } catch(error) {
         res.status(500).json({
             message: 'failed to fetch attendance',
             error: error.message
+        })
+    }
+}
+
+
+const getLowAttendance = async (req, res) => {
+    try {
+        const threshold = Number(req.query.threshold) || 75
+        
+        const attendance = await Attendance.find()
+        .populate('student')
+        .populate('subject')
+
+        const lowAttendance = attendance.map((record) => {
+            const percentage = 
+            record.classesConducted === 0 
+            ? 0 
+            : (record.classesAttended / record.classesConducted) * 100
+
+            return{
+                ...record.toObject(),
+                attendancePercentage: Number(percentage.toFixed(2)),
+            }
+        })
+        .filter((record) => record.attendancePercentage < threshold)
+
+        return res.status(200).json({
+            threshold,
+            count: lowAttendance.length,
+            records: lowAttendance,
+        })
+    }   catch(error) {
+
+        res.status(500).json({
+            message: 'failed to fetch low attendance',
+            error: error.message,
         })
     }
 }
@@ -141,7 +203,8 @@ const deleteattendance = async (req, res) => {
 module.exports = {
     createAttendance,
     getAttendance,
-    getAttendanceById,
+    getAttendanceByStudent,
+    getLowAttendance,
     updateAttendance,
     deleteattendance,
 }

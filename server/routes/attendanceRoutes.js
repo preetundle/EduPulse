@@ -6,11 +6,12 @@ const protect = require('../middleware/authMiddleware')
 const authorizeRoles = require('../middleware/roleMiddleware')
 
 
-const { createAttendance, getAttendance, getAttendanceById, updateAttendance, deleteattendance } = require('../controllers/attendanceController')
+const { createAttendance, getAttendance, getAttendanceByStudent, getLowAttendance, updateAttendance, deleteattendance } = require('../controllers/attendanceController')
 
 router.post('/', protect, authorizeRoles('admin', 'teacher'), createAttendance)
 router.get('/', protect, authorizeRoles('admin', 'teacher'), getAttendance)
-router.get('/student/:studentId', protect, authorizeRoles('admin', 'teacher'), getAttendanceById)
+router.get('/low', protect, authorizeRoles('admin','teacher'), getLowAttendance)
+router.get('/student/:studentId', protect, authorizeRoles('admin', 'teacher'), getAttendanceByStudent)
 router.put('/:id', protect, authorizeRoles('admin', 'teacher'), updateAttendance)
 router.delete('/:id', protect, authorizeRoles('admin', 'teacher'), deleteattendance)
 
