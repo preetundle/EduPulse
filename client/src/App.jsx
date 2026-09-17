@@ -1,17 +1,20 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
-import Login  from "./pages/login"
+import { MotionConfig } from 'framer-motion'
+import Login from './pages/Login'
 import Students from './pages/Students'
-import Dashboard from "./pages/Dashboard"
+import Dashboard from './pages/Dashboard'
 
-function App(){
-  return(
-    <BrowserRouter>
-    <Routes>
-      <Route path='/' element={<Login />} />
-      <Route path='/Dashboard' element={<Dashboard />} />
-      <Route path='/Students' element={<Students />} />
-    </Routes>
-    </BrowserRouter>
+function App() {
+  return (
+    <MotionConfig reducedMotion="user">
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Login />} />
+          <Route path="/Dashboard" element={<Dashboard />} />
+          <Route path="/Students" element={<Students />} />
+        </Routes>
+      </BrowserRouter>
+    </MotionConfig>
   )
 }
 

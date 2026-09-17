@@ -7,7 +7,7 @@ const protect = (req, res, next) => {
 
         console.log('authorization header:', authHeader)
 
-        if(!authHeader || !authHeader.startsWith('Bearer'))  {
+        if(!authHeader || !authHeader.startsWith('Bearer '))  {
             return res.status(401).json ({
                 message: 'authentication required',
             })

@@ -2,8 +2,8 @@ import { useEffect, useState } from 'react'
 import { api } from '../services/api'
 
 import {
-  LineChart,
-  Line,
+  BarChart,
+  Bar,
   XAxis,
   YAxis,
   CartesianGrid,
@@ -12,34 +12,40 @@ import {
 } from 'recharts'
 
 
-function PerformanceChart() {
 
-  const [performanceData, setPerformanceData] = useState([])
-
+function AttendanceChart() {
+  
+  const [attendanceData, setAttendanceData] = useState([])
+  
   useEffect(() => {
-    async function loadPerformance() {
-      try {
-        const data = await api.get('/analytics/subject-performance')
-        console.log('Subject performance:', data)
-        setPerformanceData(data)
-      }  catch (error) {
-        console.log('performance error : ', error.message)
-      }
+    async function loadAttendance() {
+    try {
+      const data = await api.get('/analytics/subject-attendance')
+
+      console.log('subject attendance:', data)
+
+      setAttendanceData(data)
+    } catch(error) {
+      console.log('Attendance error:', error.message)
     }
-    loadPerformance()
+  }
+
+  loadAttendance()
   }, [])
+
+
 
   return (
     <div className="rounded-2xl border border-white/[0.08] bg-white/[0.04] p-5 backdrop-blur-xl">
-      <h3 className="text-lg font-semibold text-white">Performance Overview</h3>
+      <h3 className="text-lg font-semibold text-white">Attendance Overview</h3>
 
       <p className="mt-1 mb-4 text-sm text-slate-500">
-        Average marks by subject
+        Average attendance by subject
       </p>
 
       <div className="h-72">
         <ResponsiveContainer width="100%" height="100%">
-          <LineChart data={performanceData}>
+          <BarChart data={attendanceData}>
             <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.06)" />
 
             <XAxis dataKey="code" stroke="#64748b" tick={{ fill: '#94a3b8', fontSize: 12 }} />
@@ -54,21 +60,15 @@ function PerformanceChart() {
                 color: '#f1f5f9',
               }}
               labelStyle={{ color: '#94a3b8' }}
+              cursor={{ fill: 'rgba(255,255,255,0.04)' }}
             />
 
-            <Line
-              type="monotone"
-              dataKey="averageMarks"
-              stroke="#818cf8"
-              strokeWidth={3}
-              dot={{ fill: '#818cf8', r: 4 }}
-              activeDot={{ r: 6 }}
-            />
-          </LineChart>
+            <Bar dataKey="averageAttendance" fill="#818cf8" radius={[6, 6, 0, 0]} />
+          </BarChart>
         </ResponsiveContainer>
       </div>
     </div>
   )
 }
 
-export default PerformanceChart
+export default AttendanceChart
