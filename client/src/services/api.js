@@ -21,6 +21,11 @@ async function request(endpoint, options = {}) {
   const data = await response.json()
 
   if (!response.ok) {
+    if(response.status === 401){
+      localStorage.removeItem('token')
+      window.location.href = '/'
+      return
+    }
     throw new Error(data.message || 'Something went wrong')
   }
 

@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion'
+import { useNavigate } from 'react-router-dom'
 import {
   Search,
   Bell,
@@ -7,6 +8,16 @@ import {
 } from 'lucide-react'
 
 function Navbar() {
+
+    const navigate = useNavigate()
+
+    function handleLogout() {
+      localStorage.removeItem('token')
+      navigate('/')
+    }
+
+
+
   return (
     <header className="h-20 border-b border-white/10 bg-[#0b0f1a]/80 backdrop-blur-xl flex items-center justify-between px-6 sticky top-0 z-50">
 
@@ -73,6 +84,7 @@ function Navbar() {
         {/* Profile */}
         <motion.button
           whileHover={{ y: -1 }}
+          onClick={handleLogout}
           className="flex items-center gap-3 px-2 py-1.5 rounded-xl hover:bg-white/[0.05] transition"
         >
 

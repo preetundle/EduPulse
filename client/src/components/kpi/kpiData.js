@@ -108,4 +108,4 @@ export const kpiDefs = {
   },
 }
 
-export const kpiOrder = ['students', 'marks', 'attendance', 'pass']
+export const kpiOrder = ['students', 'marks', 'attendance']
