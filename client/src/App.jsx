@@ -4,6 +4,8 @@ import ProtectedRoute from './components/ProtectedRoute'
 import Login from './pages/Login'
 import Students from './pages/Students'
 import Dashboard from './pages/Dashboard'
+import Marks from './pages/Marks'
+import Attendance from './pages/Attendance'
 
 function App() {
   return (
@@ -22,6 +24,21 @@ function App() {
           <ProtectedRoute>
           <Students />
           </ProtectedRoute>} />
+          <Route path= "/Marks"
+          element={ 
+            <ProtectedRoute>
+              <Marks />
+            </ProtectedRoute>
+           }
+           />
+           <Route
+  path="/Attendance"
+  element={
+    <ProtectedRoute>
+      <Attendance />
+    </ProtectedRoute>
+  }
+/>  
         </Routes>
       </BrowserRouter>
     </MotionConfig>
