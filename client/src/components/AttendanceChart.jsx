@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { api } from '../services/api'
+import AsyncState from './AsyncState'
 
 import {
   BarChart,
@@ -16,6 +17,8 @@ import {
 function AttendanceChart() {
   
   const [attendanceData, setAttendanceData] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
   
   useEffect(() => {
     async function loadAttendance() {
@@ -27,6 +30,9 @@ function AttendanceChart() {
       setAttendanceData(data)
     } catch(error) {
       console.log('Attendance error:', error.message)
+      setError(error.message)
+    } finally{
+      setLoading(false)
     }
   }
 
@@ -43,30 +49,52 @@ function AttendanceChart() {
         Average attendance by subject
       </p>
 
-      <div className="h-72">
-        <ResponsiveContainer width="100%" height="100%">
-          <BarChart data={attendanceData}>
-            <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.06)" />
+      <AsyncState loading={loading} error={error}>
+        {attendanceData.length === 0 ? (
+    <p className="py-20 text-center text-slate-500">
+      No attendance data available.
+    </p>
+  ) : (
+  <div className="h-72">
+    <ResponsiveContainer width="100%" height="100%">
+      <BarChart data={attendanceData}>
+        <CartesianGrid
+          strokeDasharray="3 3"
+          stroke="rgba(255,255,255,0.06)"
+        />
 
-            <XAxis dataKey="code" stroke="#64748b" tick={{ fill: '#94a3b8', fontSize: 12 }} />
+        <XAxis
+          dataKey="code"
+          stroke="#64748b"
+          tick={{ fill: '#94a3b8', fontSize: 12 }}
+        />
 
-            <YAxis stroke="#64748b" tick={{ fill: '#94a3b8', fontSize: 12 }} />
+        <YAxis
+          stroke="#64748b"
+          tick={{ fill: '#94a3b8', fontSize: 12 }}
+        />
 
-            <Tooltip
-              contentStyle={{
-                background: '#0d1120',
-                border: '1px solid rgba(255,255,255,0.1)',
-                borderRadius: 12,
-                color: '#f1f5f9',
-              }}
-              labelStyle={{ color: '#94a3b8' }}
-              cursor={{ fill: 'rgba(255,255,255,0.04)' }}
-            />
+        <Tooltip
+          contentStyle={{
+            background: '#0d1120',
+            border: '1px solid rgba(255,255,255,0.1)',
+            borderRadius: 12,
+            color: '#f1f5f9',
+          }}
+          labelStyle={{ color: '#94a3b8' }}
+          cursor={{ fill: 'rgba(255,255,255,0.04)' }}
+        />
 
-            <Bar dataKey="averageAttendance" fill="#818cf8" radius={[6, 6, 0, 0]} />
-          </BarChart>
-        </ResponsiveContainer>
-      </div>
+        <Bar
+          dataKey="averageAttendance"
+          fill="#818cf8"
+          radius={[6, 6, 0, 0]}
+        />
+      </BarChart>
+    </ResponsiveContainer>
+  </div>
+  )}
+</AsyncState>
     </div>
   )
 }

@@ -201,7 +201,11 @@ const getAtRiskStudents = async (req, res) => {
                 }
             },
             {
-                $unwind: '$attendance',
+                $unwind: {
+                    path: '$attendance',
+                    preserveNullAndEmptyArrays: true,
+                }
+                
             },
             {
                 $project: {

@@ -1,8 +1,11 @@
 import { useEffect, useState } from 'react'
 import { api } from '../services/api'
+import AsyncState from './AsyncState'
 
 function RiskStudentsTable() {
   const [riskStudents, setRiskStudents] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
 
   useEffect(() => {
     async function loadRiskStudents() {
@@ -14,6 +17,9 @@ function RiskStudentsTable() {
         setRiskStudents(data)
       } catch (error) {
         console.error('At-risk students error:', error.message)
+        setError(error.message)
+      } finally {
+        setLoading(false)
       }
     }
 
@@ -29,7 +35,7 @@ function RiskStudentsTable() {
           Students who may need academic attention
         </p>
       </div>
-
+    <AsyncState loading={loading} error={error}>
       <div className="overflow-x-auto">
         <table className="w-full text-sm">
           <thead>
@@ -43,35 +49,61 @@ function RiskStudentsTable() {
           </thead>
 
           <tbody>
-            {riskStudents.map((student) => (
-              <tr
-                key={student.student}
-                className="border-b border-white/[0.05] transition-colors last:border-0 hover:bg-white/[0.03]"
-              >
-                <td className="px-5 py-4 font-medium text-white">
-                  {student.student}
-                </td>
+  {riskStudents.length === 0 ? (
+    <tr>
+      <td
+        colSpan="5"
+        className="px-5 py-10 text-center text-slate-500"
+      >
+        No students currently require attention.
+      </td>
+    </tr>
+  ) : (
+    riskStudents.map((student) => (
+      <tr
+        key={student.student}
+        className="border-b border-white/[0.05] transition-colors last:border-0 hover:bg-white/[0.03]"
+      >
+        <td className="px-5 py-4 font-medium text-white">
+          {student.student}
+        </td>
 
-                <td className="px-5 py-4 text-slate-400">
-                  {student.email}
-                </td>
+        <td className="px-5 py-4 text-slate-400">
+          {student.email}
+        </td>
 
-                <td className="px-5 py-4 text-slate-400">
-                  {student.attendancePercentage}%
-                </td>
+        <td
+  className={`px-5 py-4 ${
+    student.attendancePercentage < 75
+      ? 'font-medium text-red-400'
+      : 'text-slate-400'
+  }`}
+>
+  {student.attendancePercentage}%
+</td>
 
-                <td className="px-5 py-4 text-slate-400">
-                  {student.averageMarks}
-                </td>
+        <td
+  className={`px-5 py-4 ${
+    student.averageMarks < 50
+      ? 'font-medium text-red-400'
+      : 'text-slate-400'
+  }`}
+>
+  {student.averageMarks}
+</td>
 
-                <td className="px-5 py-4 text-slate-400">
-                  {student.reason}
-                </td>
-              </tr>
-            ))}
+        <td className="px-5 py-4">
+  <span className="rounded-full bg-red-500/10 px-3 py-1 text-xs font-medium text-red-400">
+    {student.reason}
+  </span>
+</td>
+      </tr>
+    ))
+  )}
           </tbody>
         </table>
       </div>
+      </AsyncState>
     </div>
   )
 }

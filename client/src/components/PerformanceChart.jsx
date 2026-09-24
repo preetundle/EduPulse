@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { api } from '../services/api'
-
+import AsyncState from './AsyncState'
 import {
   LineChart,
   Line,
@@ -15,6 +15,9 @@ import {
 function PerformanceChart() {
 
   const [performanceData, setPerformanceData] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
+
 
   useEffect(() => {
     async function loadPerformance() {
@@ -24,6 +27,9 @@ function PerformanceChart() {
         setPerformanceData(data)
       }  catch (error) {
         console.log('performance error : ', error.message)
+        setError(error.message)
+      } finally{
+        setLoading(false)
       }
     }
     loadPerformance()
@@ -37,36 +43,54 @@ function PerformanceChart() {
         Average marks by subject
       </p>
 
-      <div className="h-72">
-        <ResponsiveContainer width="100%" height="100%">
-          <LineChart data={performanceData}>
-            <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.06)" />
+      <AsyncState loading={loading} error={error}>
+        {performanceData.length === 0 ? (
+    <p className="py-20 text-center text-slate-500">
+      No performance data available.
+    </p>
+  ) : (
+  <div className="h-72">
+    <ResponsiveContainer width="100%" height="100%">
+      <LineChart data={performanceData}>
+        <CartesianGrid
+          strokeDasharray="3 3"
+          stroke="rgba(255,255,255,0.06)"
+        />
 
-            <XAxis dataKey="code" stroke="#64748b" tick={{ fill: '#94a3b8', fontSize: 12 }} />
+        <XAxis
+          dataKey="code"
+          stroke="#64748b"
+          tick={{ fill: '#94a3b8', fontSize: 12 }}
+        />
 
-            <YAxis stroke="#64748b" tick={{ fill: '#94a3b8', fontSize: 12 }} />
+        <YAxis
+          stroke="#64748b"
+          tick={{ fill: '#94a3b8', fontSize: 12 }}
+        />
 
-            <Tooltip
-              contentStyle={{
-                background: '#0d1120',
-                border: '1px solid rgba(255,255,255,0.1)',
-                borderRadius: 12,
-                color: '#f1f5f9',
-              }}
-              labelStyle={{ color: '#94a3b8' }}
-            />
+        <Tooltip
+          contentStyle={{
+            background: '#0d1120',
+            border: '1px solid rgba(255,255,255,0.1)',
+            borderRadius: 12,
+            color: '#f1f5f9',
+          }}
+          labelStyle={{ color: '#94a3b8' }}
+        />
 
-            <Line
-              type="monotone"
-              dataKey="averageMarks"
-              stroke="#818cf8"
-              strokeWidth={3}
-              dot={{ fill: '#818cf8', r: 4 }}
-              activeDot={{ r: 6 }}
-            />
-          </LineChart>
-        </ResponsiveContainer>
-      </div>
+        <Line
+          type="monotone"
+          dataKey="averageMarks"
+          stroke="#818cf8"
+          strokeWidth={3}
+          dot={{ fill: '#818cf8', r: 4 }}
+          activeDot={{ r: 6 }}
+        />
+      </LineChart>
+    </ResponsiveContainer>
+  </div>
+  )}
+</AsyncState>
     </div>
   )
 }
